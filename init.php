@@ -3,7 +3,7 @@ class af_refspoof extends Plugin {
     /** @var PluginHost **/
     protected $host;
 
-    /** @var Db **/
+    /** @var PDO **/
     protected $dbh;
 
     function about() {
@@ -22,7 +22,7 @@ class af_refspoof extends Plugin {
         require_once ("PhCURL.php");
 
         $this->host = $host;
-        $this->dbh = Db::get();
+        $this->dbh = Db::pdo();
         $host->add_hook($host::HOOK_RENDER_ARTICLE_CDM, $this);
         $host->add_hook($host::HOOK_PREFS_TAB, $this);
     }
@@ -157,11 +157,14 @@ EOF;
     protected function getFeeds()
     {
         $feeds = array();
-        $result = $this->dbh->query("SELECT id, title
+
+        $sth = $this->dbh->prepare("SELECT id, title
                 FROM ttrss_feeds
-                WHERE owner_uid = ".$_SESSION["uid"].
-                " ORDER BY order_id, title");
-        while ($line = $this->dbh->fetch_assoc($result)) {
+                WHERE owner_uid = ?
+                ORDER BY order_id, title");
+        $sth->execute([$_SESSION["uid"]]);
+
+        while ($line = $sth->fetch()) {
             $feeds[] = (object) $line;
         }
         return $feeds;
