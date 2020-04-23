@@ -64,9 +64,6 @@ class PhCURL
     const METHOD_GET  = "get";
     const METHOD_PUT  = "put";
 
-    const CLOSEPOLICY_LEAST_RECENTLY_USED   = CURLCLOSEPOLICY_LEAST_RECENTLY_USED;
-    const CLOSEPOLICY_OLDEST                = CURLCLOSEPOLICY_OLDEST;
-
     const FTPAUTH_DEFAULT   =  CURLFTPAUTH_DEFAULT;
     const FTPAUTH_SSL       =  CURLFTPAUTH_SSL;
     const FTPAUTH_TLS       =  CURLFTPAUTH_TLS ;
@@ -552,15 +549,6 @@ class PhCURL
      */
     public function setClosePolicy($value)
     {
-        switch($value){
-            case self::CLOSEPOLICY_LEAST_RECENTLY_USED:
-            case self::CLOSEPOLICY_OLDEST:
-                curl_setopt($this->_handle, CURLOPT_CLOSEPOLICY, $value);
-                break;
-            default:
-                throw new Exception("Invalid closure policy specified");
-                break;
-        }
         return $this;
     }
 
